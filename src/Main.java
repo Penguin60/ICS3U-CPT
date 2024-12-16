@@ -19,19 +19,48 @@ public class Main {
         while (shouldContinue) {
             while (gameRunning) {
                 // TODO: Print Gameboard
-                System.out.println("Yellow, on which column do you want to place your token? (1-7)");
-                int column = scanner.nextInt();
-                // TODO: Validate input and continue asking user for input if it does not work
+                int column = 0;
+                while (true) {
+                    System.out.println("Yellow, on which column do you want to place your token? (1-7)");
+                    int tempColumn = scanner.nextInt();
+                    if (isValidInput(tempColumn)) {
+                        column = tempColumn;
+                        break;
+                    }
+                    System.out.println("Yellow, that is not a valid input.");
+                }
 
                 // Adds a value to the gameboard at a certain column
                 modifyGameboard(column - 1, 'Y');
 
+                while (true) {
+                    System.out.println("Red, on which column do you want to place your token? (1-7)");
+                    int tempColumn = scanner.nextInt();
+                    if (isValidInput(tempColumn)) {
+                        column = tempColumn;
+                        break;
+                    }
+                    System.out.println("Red, that is not a valid input.");
+                }
+
                 // Repeats the process for Red
-                System.out.println("Red, on which column do you want to place your token? (1-7)");
-                column = scanner.nextInt();
                 modifyGameboard(column - 1, 'R');
             }
         }
+    }
+
+    public static boolean isValidInput(int column) {
+        /*
+        * Checks if the column that the user inputs is valid
+        * Checks if there is still space left in said column
+         */
+
+        if (column > 0 && column < 8) {
+            if (gameBoard[column - 1][5] == ' ') {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void modifyGameboard(int column, char player) {
