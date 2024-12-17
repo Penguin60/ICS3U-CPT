@@ -61,35 +61,41 @@ public class Main {
                 gameBoard[i][j] = ' ';
             }
         }
-
+        // While the users wish to continue
         while (shouldContinue) {
+            // While the game is still running
             while (gameRunning) {
                 // TODO: Print Gameboard
-                int column = 0;
+                // Initializes the column the user wishes to place the token in
+                int column;
                 while (true) {
                     System.out.println("Yellow, on which column do you want to place your token? (1-7)");
+                    // Takes in the input as a temporary value
                     int tempColumn = scanner.nextInt();
                     if (isValidInput(tempColumn)) {
+                        // If the temporary value is valid, make it the column
                         column = tempColumn;
-                        break;
+                        break; // Exits out of loop
                     }
                     System.out.println("Yellow, that is not a valid input.");
                 }
 
-                // Adds a value to the gameboard at a certain column
+                // Puts the token 'Y' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'Y');
 
                 while (true) {
                     System.out.println("Red, on which column do you want to place your token? (1-7)");
+                    // Takes in the input as a temporary value
                     int tempColumn = scanner.nextInt();
                     if (isValidInput(tempColumn)) {
+                        // If the temporary value is valid, make it the column
                         column = tempColumn;
-                        break;
+                        break; // Exits out of loop
                     }
                     System.out.println("Red, that is not a valid input.");
                 }
 
-                // Repeats the process for Red
+                // Puts the token 'R' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'R');
             }
         }
@@ -108,8 +114,8 @@ public class Main {
 
     public static boolean isValidInput(int column) {
         /*
-        * Checks if the column that the user inputs is valid
-        * Checks if there is still space left in said column
+        * Checks if the column that the user inputs is valid from columns 1 to 7
+        * Checks if the top row at said column is empty
          */
 
         if (column > 0 && column < 8) {
@@ -117,7 +123,7 @@ public class Main {
                 return true;
             }
         }
-        return false;
+        return false; // If it does not return true, return false
     }
 
     public static void modifyGameboard(int column, char player) {
