@@ -142,4 +142,119 @@ public class Main {
             }
         }
     }
+
+    public static boolean checkGameboard(int row, int column, char player) {
+        /*
+         * Checks to see if the player has won the game
+         * Checks to see if the player has won by checking row, column, left diagonal, and right diagonal
+         */
+        if (checkRow(row, column, player) || checkColumn(row, column, player) || checkLeftDiagonal(row, column, player) || checkRightDiagonal(row, column, player)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static boolean checkRow(int row, int column, char player) {
+        /*
+         * Checks to see if the player has won by checking the row
+         * If the player has 4 tokens in a row, the player wins
+         */
+        int counter = 0;
+        for (int i = 0; i < 7; i++) {
+            if (gameBoard[i][column] == player) {
+                counter++;
+            }
+            else {
+                counter = 0;
+            }
+            if (counter == 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkColumn(int row, int column, char player) {
+        /*
+         * Checks to see if the player has won by checking the column
+         * If the player has 4 tokens in a column, the player wins
+         */
+        int counter = 0;
+        for (int i = 0; i < 6; i++) {
+            if (gameBoard[row][i] == player) {
+                counter++;
+            }
+            else {
+                counter = 0;
+            }
+            if (counter == 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkLeftDiagonal(int row, int column, char player) {
+        /*
+         * Checks to see if the player has won by checking the left diagonal
+         * If the player has 4 tokens in a diagonal, the player wins
+         */
+        int counter = 0;
+        int currentRow = row;
+        int currentColumn = column;
+        // locate the top left corner of the diagonal
+        while (currentRow < 7 && currentColumn >= 0) {
+            currentRow++;
+            currentColumn--;
+        }
+
+        // check the diagonal
+        while (currentRow >= 0 && currentColumn < 6) {
+            if (gameBoard[currentRow][currentColumn] == player) {
+                counter++;
+            }
+            else {
+                counter = 0;
+            }
+            if (counter == 4) {
+                return true;
+            }
+            currentRow--;
+            currentColumn++;
+        }
+        return false;
+    }
+
+    public static boolean checkRightDiagonal(int row, int column, char player) {
+        /*
+         * Checks to see if the player has won by checking the right diagonal
+         * If the player has 4 tokens in a diagonal, the player wins
+         */
+        int counter = 0;
+        int currentRow = row;
+        int currentColumn = column;
+        // locate the top right corner of the diagonal
+        while (currentRow < 7 && currentColumn < 6) {
+            currentRow++;
+            currentColumn--;
+        }
+
+        // check the diagonal
+        while (currentRow >= 0 && currentColumn >= 0) {
+            if (gameBoard[currentRow][currentColumn] == player) {
+                counter++;
+            }
+            else {
+                counter = 0;
+            }
+            if (counter == 4) {
+                return true;
+            }
+            currentRow--;
+            currentColumn--;
+        }
+        return false;
+    }
 }
