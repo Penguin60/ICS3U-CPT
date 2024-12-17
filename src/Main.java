@@ -84,41 +84,57 @@ public class Main {
     }
 
     public static void printGameboard() {
-        int x = 0;
+        /*
+         * Initializes the y value for accessing the gameboard
+         * y starts at the max index and decrements to 0
+         * this is because the board is being printed from top down
+         */
         int y = 5;
+        /*
+         * Iterate through the gameboard template, replacing the '*' with the tokens
+         * and the '#' with the column numbers
+         */
         for (int i = 0; i < boardTemplate.length; i++) {
             String row = boardTemplate[i];
-            if (i > 12) {
-                int displayNum = 1;
-                for (int j = 0; j < row.length(); j++) {
-                    if (row.charAt(j) != '#') {
-                        continue;
-                    }
-                    row = row.replaceFirst("[#]", RESET + displayNum + BLUE);
-                    displayNum++;
-                }
-                System.out.println(row);
-                continue;
-            }
+            /*
+             * If the row is on an even row, no processing is necessary, as all
+             * dividers have an even row index
+             */
             if (i % 2 == 0) {
                 System.out.println(row);
                 continue;
             }
-            for (int j = 0; j < row.length(); j++) {
-                if (row.charAt(j) != '*') {
-                    continue;
+            // If the row is on the second last row, replace the '#' with the column numbers
+            if (i == boardTemplate.length - 2) {
+                // Iterate through the columns, replacing each occurence of '#' with the column number
+                for (int columnNum = 1; columnNum <= 7; columnNum++) {
+                    /*
+                     * Replace the first occurrence of '#' with the column number, along
+                     * with additional formatting
+                     */
+                    row = row.replaceFirst("[#]", RESET + columnNum + BLUE);
                 }
-                row = row.replaceFirst("[*]", getTile(gameBoard[x][y]));
-                x++;
+                System.out.println(row);
+                continue;
+            }
+            // Iterate through the row, replacing each occurrence of '*' with the
+            // token in the corresponding position on the gameboard
+            for (char[] column : gameBoard) {
+                /*
+                 * Replace the first occurrence of '*' with the intended token, along
+                 * with additional formatting
+                 */
+                row = row.replaceFirst("[*]", getToken(column[y]));
             }
             System.out.println(row);
-            x = 0;
             y--;
         }
+        // Reset the color of the text to default
         System.out.print(RESET);
     }
 
-    public static String getTile(char player) {
+    public static String getToken(char player) {
+        // Apply formatting to the token based on the player
         switch (player) {
             case 'Y':
                 return YELLOW + "●" + BLUE;
@@ -136,9 +152,7 @@ public class Main {
          */
 
         if (column > 0 && column < 8) {
-            if (gameBoard[column - 1][5] == ' ') {
-                return true;
-            }
+            return gameBoard[column - 1][5] == ' ';
         }
         return false; // If it does not return true, return false
     }
@@ -171,12 +185,10 @@ public class Main {
          * Checks to see if the player has won the game
          * Checks to see if the player has won by checking row, column, left diagonal, and right diagonal
          */
-        if (checkRow(row, column, player) || checkColumn(row, column, player) || checkLeftDiagonal(row, column, player) || checkRightDiagonal(row, column, player)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return checkRow(row, column, player)
+            || checkColumn(row, column, player)
+            || checkLeftDiagonal(row, column, player)
+            || checkRightDiagonal(row, column, player);
     }
 
     public static boolean checkRow(int row, int column, char player) {
