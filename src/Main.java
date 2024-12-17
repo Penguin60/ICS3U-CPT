@@ -1,4 +1,3 @@
-import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -14,44 +13,26 @@ public class Main {
     static boolean gameRunning = true;
     static boolean shouldContinue = true;
     static char[][] gameBoard = new char[7][6];
-
-    // ---------------------------------
-    // | ● | ● | ● | ● | ● | ● | ● | ● |
-    // ---------------------------------
-    // | ● | ● | ● | ● | ● | ● | ● | ● |
-    // ---------------------------------
-    // | ● | ● | ● | ● | ● | ● | ● | ● |
-    // ---------------------------------
-    // | ● | ● | ● | ● | ● | ● | ● | ● |
-    // ---------------------------------
-    // | ● | ● | ● | ● | ● | ● | ● | ● |
-    // ---------------------------------
+    static final String[] boardTemplate = {
+        BLUE + "-------------------------------------------",
+        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
+        BLUE + "-------------------------------------------",
+        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
+        BLUE + "-------------------------------------------",
+        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
+        BLUE + "-------------------------------------------",
+        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
+        BLUE + "-------------------------------------------",
+        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
+        BLUE + "-------------------------------------------",
+        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
+        BLUE + "-------------------------------------------",
+        BLUE + "|  #  |  #  |  #  |  #  |  #  |  #  |  #  |",
+        BLUE + "-------------------------------------------",
+    };
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String[] boardTemplate = new String[11];
-        boardTemplate[0] = (BLUE + "---------------------------------");
-        boardTemplate[1] = (BLUE + "| * | * | * | * | * | * | * | * |");
-        boardTemplate[2] = (BLUE + "---------------------------------");
-        boardTemplate[3] = (BLUE + "| * | * | * | * | * | * | * | * |");
-        boardTemplate[4] = (BLUE + "---------------------------------");
-        boardTemplate[5] = (BLUE + "| * | * | * | * | * | * | * | * |");
-        boardTemplate[6] = (BLUE + "---------------------------------");
-        boardTemplate[7] = (BLUE + "| * | * | * | * | * | * | * | * |");
-        boardTemplate[8] = (BLUE + "---------------------------------");
-        boardTemplate[9] = (BLUE + "| * | * | * | * | * | * | * | * |");
-        boardTemplate[10] = (BLUE + "---------------------------------");
-        Random random = new Random();
-        for (String s : boardTemplate) {
-            String row = s;
-            for (int j = 0; j < row.length(); j++) {
-                if (row.charAt(j) != '*') {
-                    continue;
-                }
-                row = row.replaceFirst("[*]", getTile(random.nextBoolean() ? 'Y' : 'R'));
-            }
-            System.out.println(row);
-        }
         System.out.print(GREEN + "Press enter to continue..." + RESET);
         scanner.nextLine();
 
@@ -65,7 +46,7 @@ public class Main {
         while (shouldContinue) {
             // While the game is still running
             while (gameRunning) {
-                // TODO: Print Gameboard
+                printGameboard();
                 // Initializes the column the user wishes to place the token in
                 int column;
                 while (true) {
@@ -83,6 +64,7 @@ public class Main {
                 // Puts the token 'Y' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'Y');
 
+                printGameboard();
                 while (true) {
                     System.out.println("Red, on which column do you want to place your token? (1-7)");
                     // Takes in the input as a temporary value
@@ -101,6 +83,41 @@ public class Main {
         }
     }
 
+    public static void printGameboard() {
+        int x = 0;
+        int y = 5;
+        for (int i = 0; i < boardTemplate.length; i++) {
+            String row = boardTemplate[i];
+            if (i > 12) {
+                int displayNum = 1;
+                for (int j = 0; j < row.length(); j++) {
+                    if (row.charAt(j) != '#') {
+                        continue;
+                    }
+                    row = row.replaceFirst("[#]", RESET + displayNum + BLUE);
+                    displayNum++;
+                }
+                System.out.println(row);
+                continue;
+            }
+            if (i % 2 == 0) {
+                System.out.println(row);
+                continue;
+            }
+            for (int j = 0; j < row.length(); j++) {
+                if (row.charAt(j) != '*') {
+                    continue;
+                }
+                row = row.replaceFirst("[*]", getTile(gameBoard[x][y]));
+                x++;
+            }
+            System.out.println(row);
+            x = 0;
+            y--;
+        }
+        System.out.print(RESET);
+    }
+
     public static String getTile(char player) {
         switch (player) {
             case 'Y':
@@ -114,8 +131,8 @@ public class Main {
 
     public static boolean isValidInput(int column) {
         /*
-        * Checks if the column that the user inputs is valid from columns 1 to 7
-        * Checks if the top row at said column is empty
+         * Checks if the column that the user inputs is valid from columns 1 to 7
+         * Checks if the top row at said column is empty
          */
 
         if (column > 0 && column < 8) {
