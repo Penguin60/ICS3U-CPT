@@ -63,6 +63,7 @@ public class Main {
 
                 // Puts the token 'Y' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'Y');
+                if (!gameRunning) break;
 
                 printGameboard();
                 while (true) {
@@ -79,6 +80,7 @@ public class Main {
 
                 // Puts the token 'R' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'R');
+                if (!gameRunning) break;
             }
         }
     }
@@ -162,20 +164,33 @@ public class Main {
          * Checks to see which team the player is on
          * Will attempt to place a token at the bottom of a column to simulate how gravity would impact a token in real life
          */
+        int row = 0;
         if (player == 'Y') {
             for (int y = 0; y < 7; y++) {
                 if (gameBoard[column][y] == ' ') {
                     gameBoard[column][y] = 'Y';
+                    row = y;
                     break;
                 }
+            }
+            if(checkGameboard(row, column, player)) {
+                printGameboard();
+                System.out.println("Yellow wins!");
+                gameRunning = false;
             }
         }
         else if (player == 'R') {
             for (int y = 0; y < 7; y++) {
                 if (gameBoard[column][y] == ' ') {
                     gameBoard[column][y] = 'R';
+                    row = y;
                     break;
                 }
+            }
+            if(checkGameboard(row, column, player)) {
+                printGameboard();
+                System.out.println("Red wins!");
+                gameRunning = false;
             }
         }
     }
@@ -197,8 +212,8 @@ public class Main {
          * If the player has 4 tokens in a row, the player wins
          */
         int counter = 0;
-        for (int i = 0; i < 7; i++) {
-            if (gameBoard[i][column] == player) {
+        for (int i = 0; i < 6; i++) {
+            if (gameBoard[column][i] == player) {
                 counter++;
             }
             else {
@@ -218,7 +233,7 @@ public class Main {
          */
         int counter = 0;
         for (int i = 0; i < 6; i++) {
-            if (gameBoard[row][i] == player) {
+            if (gameBoard[i][row] == player) {
                 counter++;
             }
             else {
@@ -240,14 +255,13 @@ public class Main {
         int currentRow = row;
         int currentColumn = column;
         // locate the top left corner of the diagonal
-        while (currentRow < 7 && currentColumn >= 0) {
+        while (currentRow < 5 && currentColumn > 0) {
             currentRow++;
             currentColumn--;
         }
-
         // check the diagonal
-        while (currentRow >= 0 && currentColumn < 6) {
-            if (gameBoard[currentRow][currentColumn] == player) {
+        while (currentRow >= 0 && currentColumn < 7) {
+            if (gameBoard[currentColumn][currentRow] == player) {
                 counter++;
             }
             else {
@@ -271,14 +285,13 @@ public class Main {
         int currentRow = row;
         int currentColumn = column;
         // locate the top right corner of the diagonal
-        while (currentRow < 7 && currentColumn < 6) {
+        while (currentRow < 5 && currentColumn < 6) {
             currentRow++;
-            currentColumn--;
+            currentColumn++;
         }
-
         // check the diagonal
         while (currentRow >= 0 && currentColumn >= 0) {
-            if (gameBoard[currentRow][currentColumn] == player) {
+            if (gameBoard[currentColumn][currentRow] == player) {
                 counter++;
             }
             else {
