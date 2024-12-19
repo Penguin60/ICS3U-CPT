@@ -11,10 +11,10 @@ public class Main {
     public static final String WHITE = "\u001B[37m";
     public static final String RESET = "\u001B[0m";
     public static final Scanner scanner = new Scanner(System.in);
-    static boolean gameRunning = true;
-    static boolean shouldContinue = true;
-    static char[][] gameBoard = new char[7][6];
-    static final String[] boardTemplate = {
+    public static boolean gameRunning = true;
+    public static boolean shouldContinue = true;
+    public static char[][] gameBoard = new char[7][6];
+    public static final String[] boardTemplate = {
         BLUE + "-------------------------------------------",
         BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
         BLUE + "-------------------------------------------",
@@ -67,7 +67,7 @@ public class Main {
             }
             String playAgain = getAndValidateInput(
                 "Do you want to play again (y/n)? ",
-                "[yn]"
+                "[ynYN]"
             );
             if (playAgain.equalsIgnoreCase("n")) {
                 // If the player doesn't want to play again, set shouldContinue to false
@@ -199,7 +199,7 @@ public class Main {
             }
             if (checkGameboard(row, column, player)) {
                 printGameboard();
-                System.out.println("Yellow wins!");
+                System.out.println(YELLOW + "Yellow" + RESET + " wins!");
                 gameRunning = false;
             }
         }
@@ -213,7 +213,7 @@ public class Main {
             }
             if (checkGameboard(row, column, player)) {
                 printGameboard();
-                System.out.println("Red wins!");
+                System.out.println(RED + "Red" + RESET + " wins!");
                 gameRunning = false;
             }
         }
