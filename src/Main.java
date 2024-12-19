@@ -82,6 +82,20 @@ public class Main {
                 modifyGameboard(column - 1, 'R');
                 if (!gameRunning) break;
             }
+            while (true) {
+                System.out.println("Do you want to play again? (y/n)");
+                // Takes in the input as a temporary value
+                String input = scanner.next();
+                if (input.equalsIgnoreCase("n")) {
+                    shouldContinue = false;
+                    break; // Exits out of loop
+                }
+                if (input.equalsIgnoreCase("y")) {
+                    shouldContinue = true;
+                    break; // Exits out of loop
+                }
+                System.out.println("That is not a valid input.");
+            }
         }
     }
 
@@ -173,7 +187,7 @@ public class Main {
                     break;
                 }
             }
-            if(checkGameboard(row, column, player)) {
+            if (checkGameboard(row, column, player)) {
                 printGameboard();
                 System.out.println("Yellow wins!");
                 gameRunning = false;
@@ -187,7 +201,7 @@ public class Main {
                     break;
                 }
             }
-            if(checkGameboard(row, column, player)) {
+            if (checkGameboard(row, column, player)) {
                 printGameboard();
                 System.out.println("Red wins!");
                 gameRunning = false;
