@@ -12,7 +12,6 @@ public class Main {
     public static final String RESET = "\u001B[0m";
     public static final Scanner scanner = new Scanner(System.in);
     public static boolean gameRunning = true;
-    public static boolean shouldContinue = true;
     public static char[][] gameBoard = new char[7][6];
     public static final String[] boardTemplate = {
         BLUE + "-------------------------------------------",
@@ -33,17 +32,66 @@ public class Main {
     };
 
     public static void main(String[] args) {
-        /*
-         * TODO:
-         *  Implement a menu system and add welcome message,
-         *  also include rules of the game
-         */
+        // Initialize a boolean to keep track of whether the player wants to play again
+        boolean shouldContinue = true;
 
-        awaitEnter();
+        // Welcome message
+        System.out.println();
+        System.out.println("                                           __ __ ");
+        System.out.println("  _________  _  ___  _________________    / // / ");
+        System.out.println(" / ___/ __ \\/ |/ / |/ / __/ ___/_  __/   / // /_");
+        System.out.println("/ /__/ /_/ /    /    / _// /__  / /     /__  __/ ");
+        System.out.println("\\___/\\____/_/|_/_/|_/___/\\___/ /_/        /_/ ");
+        System.out.println();
+        System.out.println();
 
         // As long as the player wants to play again, repeat the game.
         while (shouldContinue) {
-            resetGame();
+
+            String input;
+
+            label:
+            do {
+                // Print the menu
+                System.out.println("+--------------------------+");
+                System.out.println("| Welcome to Connect Four! |");
+                System.out.println("+--------------------------+");
+                System.out.println("| 1. Play                  |");
+                System.out.println("| 2. Rules                 |");
+                System.out.println("| 3. Quit                  |");
+                System.out.println("+--------------------------+");
+                System.out.println();
+
+                input = getAndValidateInput(
+                    "Please select an option (1-3): ",
+                    "[1-3]"
+                );
+                System.out.println();
+
+                // If the user selects 3, exit the game
+                switch (input) {
+                    case "1":
+                        // Reset the gameboard
+                        resetGame();
+                        break;
+                    case "2":
+                        // TODO: Print rules
+                        System.out.println("rules rules rules rules rules");
+                        System.out.println();
+                        /*
+                         * Wait for the user to press enter before continuing
+                         * Gives them time to read through the rules
+                         */
+                        scanner.nextLine();
+                        awaitEnter();
+                        break;
+                    case "3":
+                        System.out.println("Thanks for playing!");
+                        return;
+                }
+            }
+            while (input.equals("2"));
+
             // While the game is still running
             while (gameRunning) {
                 printGameboard();
@@ -65,14 +113,6 @@ public class Main {
                 modifyGameboard(column - 1, 'R');
                 if (!gameRunning) break;
             }
-            String playAgain = getAndValidateInput(
-                "Do you want to play again (y/n)? ",
-                "[ynYN]"
-            );
-            if (playAgain.equalsIgnoreCase("n")) {
-                // If the player doesn't want to play again, set shouldContinue to false
-                shouldContinue = false;
-            }
         }
     }
 
@@ -82,7 +122,7 @@ public class Main {
     public static void resetGame() {
         gameRunning = true;
 
-        // Initializes the gameboard with empty spaces so that program to check to see what spots are taken
+        // Fills the gameboard with empty spaces (clears the board)
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 6; j++) {
                 gameBoard[i][j] = ' ';
@@ -189,7 +229,7 @@ public class Main {
      * Ensures input is of the proper type and fits within the correct bounds
      *
      * @param prompt the cue asking the user where they would like to go
-     * @param regex the correct parameters for the input
+     * @param regex  the correct parameters for the input
      * @return the user input once it has been validated
      */
     public static String getAndValidateInput(String prompt, String regex) {
@@ -252,7 +292,7 @@ public class Main {
     /**
      * Checks to determine whether a player has won the game yet
      *
-     * @param row the row in which the latest disc was placed
+     * @param row    the row in which the latest disc was placed
      * @param column the column in which the latest disc was placed
      * @param player the colour of the player who placed the latest disc
      * @return true if player has won, false otherwise
@@ -271,9 +311,9 @@ public class Main {
     /**
      * Checks the row of the latest disc placed to see if there are four consecutive ones
      *
-     * @param rowIndex the row in which the latest disc was placed
+     * @param rowIndex    the row in which the latest disc was placed
      * @param columnIndex the column in which the latest disc was played
-     * @param player the colour of the player who placed the latest disc
+     * @param player      the colour of the player who placed the latest disc
      * @return true if player has won, false otherwise
      */
     public static boolean checkRow(int rowIndex, int columnIndex, char player) {
@@ -299,9 +339,9 @@ public class Main {
     /**
      * Checks the column of the latest disc placed to see if there are four consecutive discs
      *
-     * @param rowIndex the row in which the latest disc was placed
+     * @param rowIndex    the row in which the latest disc was placed
      * @param columnIndex the column in which the latest disc was placed
-     * @param player the colour of the player who placed the latest disc
+     * @param player      the colour of the player who placed the latest disc
      * @return true if the player has won, false otherwise
      */
     public static boolean checkColumn(int rowIndex, int columnIndex, char player) {
@@ -327,7 +367,7 @@ public class Main {
     /**
      * Checks the diagonal from the top right to the bottom left along the latest disc that was placed
      *
-     * @param row the row in which the latest disc was placed
+     * @param row    the row in which the latest disc was placed
      * @param column the column in which the latest disc was placed
      * @param player the colour of the player who placed the latest disc
      * @return true if the player has won, false otherwise
@@ -365,7 +405,7 @@ public class Main {
     /**
      * Checks the diagonal from the top left to the bottom right along the latest disc that was placed
      *
-     * @param row the row in which the latest disc was placed
+     * @param row    the row in which the latest disc was placed
      * @param column the column in which the latest disc was placed
      * @param player the colour of the player who placed the latest disc
      * @return true if the player has won, false otherwise
@@ -405,7 +445,7 @@ public class Main {
      */
     public static void awaitEnter() {
         System.out.println();
-        System.out.print(WHITE + "Press Enter to continue...");
+        System.out.print(WHITE + "Press Enter to continue..." + RESET);
         scanner.nextLine();
     }
 }
