@@ -10,6 +10,7 @@ public class Main {
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
     public static final String RESET = "\u001B[0m";
+    public static final Scanner scanner = new Scanner(System.in);
     static boolean gameRunning = true;
     static boolean shouldContinue = true;
     static char[][] gameBoard = new char[7][6];
@@ -32,16 +33,16 @@ public class Main {
     };
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(GREEN + "Press enter to continue..." + RESET);
-        scanner.nextLine();
+        /*
+         * TODO:
+         *  Implement a menu system and add welcome message,
+         *  also include rules of the game
+         */
 
-        // Initializes the gameboard with empty spaces so that program to check to see what spots are taken
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 6; j++) {
-                gameBoard[i][j] = ' ';
-            }
-        }
+        awaitEnter();
+
+        resetGame();
+
         // While the users wish to continue
         while (shouldContinue) {
             // While the game is still running
@@ -53,7 +54,7 @@ public class Main {
                     System.out.println("Yellow, on which column do you want to place your token? (1-7)");
                     // Takes in the input as a temporary value
                     int tempColumn = scanner.nextInt();
-                    if (isValidInput(tempColumn)) {
+                    if (isValidColumn(tempColumn)) {
                         // If the temporary value is valid, make it the column
                         column = tempColumn;
                         break; // Exits out of loop
@@ -70,7 +71,7 @@ public class Main {
                     System.out.println("Red, on which column do you want to place your token? (1-7)");
                     // Takes in the input as a temporary value
                     int tempColumn = scanner.nextInt();
-                    if (isValidInput(tempColumn)) {
+                    if (isValidColumn(tempColumn)) {
                         // If the temporary value is valid, make it the column
                         column = tempColumn;
                         break; // Exits out of loop
@@ -92,9 +93,21 @@ public class Main {
                 }
                 if (input.equalsIgnoreCase("y")) {
                     shouldContinue = true;
+                    resetGame();
                     break; // Exits out of loop
                 }
                 System.out.println("That is not a valid input.");
+            }
+        }
+    }
+
+    public static void resetGame() {
+        gameRunning = true;
+
+        // Initializes the gameboard with empty spaces so that program to check to see what spots are taken
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 6; j++) {
+                gameBoard[i][j] = ' ';
             }
         }
     }
@@ -161,7 +174,7 @@ public class Main {
         }
     }
 
-    public static boolean isValidInput(int column) {
+    public static boolean isValidColumn(int column) {
         /*
          * Checks if the column that the user inputs is valid from columns 1 to 7
          * Checks if the top row at said column is empty
@@ -171,6 +184,45 @@ public class Main {
             return gameBoard[column - 1][5] == ' ';
         }
         return false; // If it does not return true, return false
+    }
+
+    public static boolean isValidInput(String input, String[] args) {
+        // Iterate through the arguments
+        for (String arg : args) {
+            // As long as the input matches one case, it's valid
+            if (input.equalsIgnoreCase(arg)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getAndValidateInput(String prompt, String regex) {
+        String input;
+
+        // Do while, because we need to prompt the user first
+        // Loops as long as the predicate is false
+        do {
+            System.out.print(prompt);
+            input = scanner.nextLine();
+        }
+        while (!input.matches(regex));
+
+        return input;
+    }
+
+    public static String getAndValidateInput(String prompt, String[] args) {
+        String input;
+
+        // Do while, because we need to prompt the user first
+        // Loops as long as the predicate is false
+        do {
+            System.out.print(prompt);
+            input = scanner.nextLine();
+        }
+        while (!isValidInput(input, args));
+
+        return input;
     }
 
     public static void modifyGameboard(int column, char player) {
@@ -220,14 +272,14 @@ public class Main {
             || checkRightDiagonal(row, column, player);
     }
 
-    public static boolean checkRow(int row, int column, char player) {
+    public static boolean checkRow(int rowIndex, int columnIndex, char player) {
         /*
-         * Checks to see if the player has won by checking the row
-         * If the player has 4 tokens in a row, the player wins
+         * Checks to see if the player has won by checking the rowIndex
+         * If the player has 4 tokens in a rowIndex, the player wins
          */
         int counter = 0;
-        for (int i = 0; i < 6; i++) {
-            if (gameBoard[column][i] == player) {
+        for (int x = 0; x < 7; x++) {
+            if (gameBoard[x][rowIndex] == player) {
                 counter++;
             }
             else {
@@ -240,14 +292,14 @@ public class Main {
         return false;
     }
 
-    public static boolean checkColumn(int row, int column, char player) {
+    public static boolean checkColumn(int rowIndex, int columnIndex, char player) {
         /*
          * Checks to see if the player has won by checking the column
          * If the player has 4 tokens in a column, the player wins
          */
         int counter = 0;
-        for (int i = 0; i < 6; i++) {
-            if (gameBoard[i][row] == player) {
+        for (int y = 0; y < 6; y++) {
+            if (gameBoard[columnIndex][y] == player) {
                 counter++;
             }
             else {
@@ -318,5 +370,14 @@ public class Main {
             currentColumn--;
         }
         return false;
+    }
+
+    /**
+     * Waits for the user to press enter before continuing.
+     */
+    public static void awaitEnter() {
+        System.out.println();
+        System.out.print(WHITE + "Press Enter to continue...");
+        scanner.nextLine();
     }
 }
