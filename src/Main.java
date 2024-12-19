@@ -9,6 +9,7 @@ public class Main {
     public static final String PURPLE = "\u001B[35m";
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
+    public static final String BOLD = "\033[0;1m";
     public static final String RESET = "\u001B[0m";
     public static final Scanner scanner = new Scanner(System.in);
     public static boolean gameRunning = true;
@@ -44,19 +45,19 @@ public class Main {
 
         // Continually repeat the game until the player quits.
         while (true) {
-
             String input;
 
             do {
                 // Print the menu
-                System.out.println("+--------------------------+");
-                System.out.println("| Welcome to Connect Four! |");
-                System.out.println("+--------------------------+");
-                System.out.println("| 1. Play                  |");
-                System.out.println("| 2. Rules                 |");
-                System.out.println("| 3. Quit                  |");
-                System.out.println("+--------------------------+");
-                System.out.println();
+                System.out.println(BOLD);
+                System.out.println("╔══════════════════════════╗");
+                System.out.println("║ Welcome to Connect Four! ║");
+                System.out.println("╠══════════════════════════╣");
+                System.out.println("║ 1. Play                  ║");
+                System.out.println("║ 2. Rules                 ║");
+                System.out.println("║ 3. Quit                  ║");
+                System.out.println("╚══════════════════════════╝");
+                System.out.println(RESET);
 
                 input = getAndValidateInput(
                     "Please select an option (1-3): ",
