@@ -41,62 +41,38 @@ public class Main {
 
         awaitEnter();
 
-        resetGame();
-
-        // While the users wish to continue
+        // As long as the player wants to play again, repeat the game.
         while (shouldContinue) {
+            resetGame();
             // While the game is still running
             while (gameRunning) {
                 printGameboard();
                 // Initializes the column the user wishes to place the token in
-                int column;
-                while (true) {
-                    System.out.println("Yellow, on which column do you want to place your token? (1-7)");
-                    // Takes in the input as a temporary value
-                    int tempColumn = scanner.nextInt();
-                    if (isValidColumn(tempColumn)) {
-                        // If the temporary value is valid, make it the column
-                        column = tempColumn;
-                        break; // Exits out of loop
-                    }
-                    System.out.println("Yellow, that is not a valid input.");
-                }
+                int column = getAndValidateColumn(
+                    YELLOW + "Yellow" + RESET + ", on which column do you want to place your token (1-7)? "
+                );
 
                 // Puts the token 'Y' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'Y');
                 if (!gameRunning) break;
 
                 printGameboard();
-                while (true) {
-                    System.out.println("Red, on which column do you want to place your token? (1-7)");
-                    // Takes in the input as a temporary value
-                    int tempColumn = scanner.nextInt();
-                    if (isValidColumn(tempColumn)) {
-                        // If the temporary value is valid, make it the column
-                        column = tempColumn;
-                        break; // Exits out of loop
-                    }
-                    System.out.println("Red, that is not a valid input.");
-                }
+                column = getAndValidateColumn(
+                    RED + "Red" + RESET + ", on which column do you want to place your token (1-7)? "
+                );
+
 
                 // Puts the token 'R' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'R');
                 if (!gameRunning) break;
             }
-            while (true) {
-                System.out.println("Do you want to play again? (y/n)");
-                // Takes in the input as a temporary value
-                String input = scanner.next();
-                if (input.equalsIgnoreCase("n")) {
-                    shouldContinue = false;
-                    break; // Exits out of loop
-                }
-                if (input.equalsIgnoreCase("y")) {
-                    shouldContinue = true;
-                    resetGame();
-                    break; // Exits out of loop
-                }
-                System.out.println("That is not a valid input.");
+            String playAgain = getAndValidateInput(
+                "Do you want to play again (y/n)? ",
+                "[yn]"
+            );
+            if (playAgain.equalsIgnoreCase("n")) {
+                // If the player doesn't want to play again, set shouldContinue to false
+                shouldContinue = false;
             }
         }
     }
@@ -174,27 +150,23 @@ public class Main {
         }
     }
 
-    public static boolean isValidColumn(int column) {
+    public static int getAndValidateColumn(String prompt) {
         /*
          * Checks if the column that the user inputs is valid from columns 1 to 7
          * Checks if the top row at said column is empty
          */
-
-        if (column > 0 && column < 8) {
-            return gameBoard[column - 1][5] == ' ';
+        int column = Integer.parseInt(getAndValidateInput(
+            prompt,
+            "[1-7]"
+        ));
+        while (gameBoard[column - 1][gameBoard[column - 1].length - 1] != ' ') {
+            column = Integer.parseInt(getAndValidateInput(
+                RED + "Column " + column + " is full, please choose another column: " + RESET,
+                "[1-7]"
+            ));
         }
-        return false; // If it does not return true, return false
-    }
 
-    public static boolean isValidInput(String input, String[] args) {
-        // Iterate through the arguments
-        for (String arg : args) {
-            // As long as the input matches one case, it's valid
-            if (input.equalsIgnoreCase(arg)) {
-                return true;
-            }
-        }
-        return false;
+        return column;
     }
 
     public static String getAndValidateInput(String prompt, String regex) {
@@ -207,20 +179,6 @@ public class Main {
             input = scanner.nextLine();
         }
         while (!input.matches(regex));
-
-        return input;
-    }
-
-    public static String getAndValidateInput(String prompt, String[] args) {
-        String input;
-
-        // Do while, because we need to prompt the user first
-        // Loops as long as the predicate is false
-        do {
-            System.out.print(prompt);
-            input = scanner.nextLine();
-        }
-        while (!isValidInput(input, args));
 
         return input;
     }
