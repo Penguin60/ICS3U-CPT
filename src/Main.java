@@ -76,6 +76,9 @@ public class Main {
         }
     }
 
+    /**
+     * Resets gameboard by setting all values within it to the default in preparation for a new game
+     */
     public static void resetGame() {
         gameRunning = true;
 
@@ -87,6 +90,9 @@ public class Main {
         }
     }
 
+    /**
+     * Prints the current status of the gameboard after a change has been made
+     */
     public static void printGameboard() {
         /*
          * Initializes the y value for accessing the gameboard
@@ -137,6 +143,12 @@ public class Main {
         System.out.print(RESET);
     }
 
+    /**
+     * Applies formatting to the player discs, adding the appropriate colours to them
+     *
+     * @param player the team the player is on (yellow or red)
+     * @return a string that contains a token coloured in accordance with the player team
+     */
     public static String getToken(char player) {
         // Apply formatting to the token based on the player
         switch (player) {
@@ -149,15 +161,20 @@ public class Main {
         }
     }
 
+    /**
+     * Asks the user to input where they want to place their disk and validates
+     *
+     * @param prompt the cue asking the user where they would like to go
+     * @return the validated column that the user has chosen to place their disc in
+     */
     public static int getAndValidateColumn(String prompt) {
-        /*
-         * Checks if the column that the user inputs is valid from columns 1 to 7
-         * Checks if the top row at said column is empty
-         */
+        // Checks if the column that the user inputs is valid from columns 1 to 7
         int column = Integer.parseInt(getAndValidateInput(
             prompt,
             "[1-7]"
         ));
+
+        // Checks if the top row at said column is empty
         while (gameBoard[column - 1][gameBoard[column - 1].length - 1] != ' ') {
             column = Integer.parseInt(getAndValidateInput(
                 RED + "Column " + column + " is full, please choose another column: " + RESET,
@@ -168,6 +185,13 @@ public class Main {
         return column;
     }
 
+    /**
+     * Ensures input is of the proper type and fits within the correct bounds
+     *
+     * @param prompt the cue asking the user where they would like to go
+     * @param regex the correct parameters for the input
+     * @return the user input once it has been validated
+     */
     public static String getAndValidateInput(String prompt, String regex) {
         String input;
         /*
@@ -176,13 +200,19 @@ public class Main {
          */
         do {
             System.out.print(prompt);
-            input = scanner.nextLine();
+            input = scanner.next();
         }
         while (!input.matches(regex));
 
         return input;
     }
 
+    /**
+     * Adds discs that have been inputted by the user to their appropriate spot in the gameboard
+     *
+     * @param column the column in which the new disc should go
+     * @param player the player colour that the disc belongs to
+     */
     public static void modifyGameboard(int column, char player) {
         /*
          * Checks to see which team the player is on
@@ -219,6 +249,14 @@ public class Main {
         }
     }
 
+    /**
+     * Checks to determine whether a player has won the game yet
+     *
+     * @param row the row in which the latest disc was placed
+     * @param column the column in which the latest disc was placed
+     * @param player the colour of the player who placed the latest disc
+     * @return true if player has won, false otherwise
+     */
     public static boolean checkGameboard(int row, int column, char player) {
         /*
          * Checks to see if the player has won the game
@@ -230,6 +268,14 @@ public class Main {
             || checkRightDiagonal(row, column, player);
     }
 
+    /**
+     * Checks the row of the latest disc placed to see if there are four consecutive ones
+     *
+     * @param rowIndex the row in which the latest disc was placed
+     * @param columnIndex the column in which the latest disc was played
+     * @param player the colour of the player who placed the latest disc
+     * @return true if player has won, false otherwise
+     */
     public static boolean checkRow(int rowIndex, int columnIndex, char player) {
         /*
          * Checks to see if the player has won by checking the rowIndex
@@ -250,6 +296,14 @@ public class Main {
         return false;
     }
 
+    /**
+     * Checks the column of the latest disc placed to see if there are four consecutive discs
+     *
+     * @param rowIndex the row in which the latest disc was placed
+     * @param columnIndex the column in which the latest disc was placed
+     * @param player the colour of the player who placed the latest disc
+     * @return true if the player has won, false otherwise
+     */
     public static boolean checkColumn(int rowIndex, int columnIndex, char player) {
         /*
          * Checks to see if the player has won by checking the column
@@ -270,6 +324,14 @@ public class Main {
         return false;
     }
 
+    /**
+     * Checks the diagonal from the top right to the bottom left along the latest disc that was placed
+     *
+     * @param row the row in which the latest disc was placed
+     * @param column the column in which the latest disc was placed
+     * @param player the colour of the player who placed the latest disc
+     * @return true if the player has won, false otherwise
+     */
     public static boolean checkLeftDiagonal(int row, int column, char player) {
         /*
          * Checks to see if the player has won by checking the left diagonal
@@ -300,6 +362,14 @@ public class Main {
         return false;
     }
 
+    /**
+     * Checks the diagonal from the top left to the bottom right along the latest disc that was placed
+     *
+     * @param row the row in which the latest disc was placed
+     * @param column the column in which the latest disc was placed
+     * @param player the colour of the player who placed the latest disc
+     * @return true if the player has won, false otherwise
+     */
     public static boolean checkRightDiagonal(int row, int column, char player) {
         /*
          * Checks to see if the player has won by checking the right diagonal
