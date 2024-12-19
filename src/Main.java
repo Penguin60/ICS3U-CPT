@@ -32,9 +32,6 @@ public class Main {
     };
 
     public static void main(String[] args) {
-        // Initialize a boolean to keep track of whether the player wants to play again
-        boolean shouldContinue = true;
-
         // Welcome message
         System.out.println();
         System.out.println("                                           __ __ ");
@@ -45,12 +42,11 @@ public class Main {
         System.out.println();
         System.out.println();
 
-        // As long as the player wants to play again, repeat the game.
-        while (shouldContinue) {
+        // Continually repeat the game until the player quits.
+        while (true) {
 
             String input;
 
-            label:
             do {
                 // Print the menu
                 System.out.println("+--------------------------+");
