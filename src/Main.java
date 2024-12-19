@@ -61,7 +61,6 @@ public class Main {
                     RED + "Red" + RESET + ", on which column do you want to place your token (1-7)? "
                 );
 
-
                 // Puts the token 'R' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'R');
                 if (!gameRunning) break;
@@ -171,9 +170,10 @@ public class Main {
 
     public static String getAndValidateInput(String prompt, String regex) {
         String input;
-
-        // Do while, because we need to prompt the user first
-        // Loops as long as the predicate is false
+        /*
+         * Loops until the user inputs a valid input
+         * The input is valid if it matches the regex
+         */
         do {
             System.out.print(prompt);
             input = scanner.nextLine();
