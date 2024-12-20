@@ -55,17 +55,18 @@ public class Main {
                 System.out.println("╠══════════════════════════╣");
                 System.out.println("║ 1. Play                  ║");
                 System.out.println("║ 2. Rules                 ║");
-                System.out.println("║ 3. Quit                  ║");
+                System.out.println("║ 3. Stats                 ║");
+                System.out.println("║ 4. Quit                  ║");
                 System.out.println("╚══════════════════════════╝");
                 System.out.println(RESET);
 
                 input = getAndValidateInput(
-                    "Please select an option (1-3): ",
-                    "[1-3]"
+                    "Please select an option (1-4): ",
+                    "[1-4]"
                 );
                 System.out.println();
 
-                // If the user selects 3, exit the game
+                // Menu options (default case is not needed because the input is restricted to 1-4)
                 switch (input) {
                     case "1":
                         // Reset the gameboard
@@ -79,15 +80,24 @@ public class Main {
                          * Wait for the user to press enter before continuing
                          * Gives them time to read through the rules
                          */
-                        scanner.nextLine();
                         awaitEnter();
                         break;
                     case "3":
+                        // TODO: Print stats
+                        System.out.println("stats");
+                        System.out.println();
+                        /*
+                         * Wait for the user to press enter before continuing
+                         * Gives them time to read the stats
+                         */
+                        awaitEnter();
+                        break;
+                    case "4":
                         System.out.println("Thanks for playing!");
                         return;
                 }
             }
-            while (input.equals("2"));
+            while (!input.equals("1"));
 
             // While the game is still running
             while (gameRunning) {
@@ -237,7 +247,7 @@ public class Main {
          */
         do {
             System.out.print(prompt);
-            input = scanner.next();
+            input = scanner.nextLine();
         }
         while (!input.matches(regex));
 
