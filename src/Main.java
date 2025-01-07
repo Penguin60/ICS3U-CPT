@@ -11,25 +11,28 @@ public class Main {
     public static final String WHITE = "\u001B[37m";
     public static final String BOLD = "\033[0;1m";
     public static final String RESET = "\u001B[0m";
+    public static final byte CONTINUE = 0;
+    public static final byte RED_WINS = 1;
+    public static final byte YELLOW_WINS = 2;
+    public static final byte DRAW = 3;
     public static final Scanner scanner = new Scanner(System.in);
-    public static boolean gameRunning = true;
     public static char[][] gameBoard = new char[7][6];
     public static final String[] boardTemplate = {
-        BLUE + "-------------------------------------------",
-        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
-        BLUE + "-------------------------------------------",
-        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
-        BLUE + "-------------------------------------------",
-        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
-        BLUE + "-------------------------------------------",
-        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
-        BLUE + "-------------------------------------------",
-        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
-        BLUE + "-------------------------------------------",
-        BLUE + "|  *  |  *  |  *  |  *  |  *  |  *  |  *  |",
-        BLUE + "-------------------------------------------",
-        BLUE + "|  #  |  #  |  #  |  #  |  #  |  #  |  #  |",
-        BLUE + "-------------------------------------------",
+        BLUE + "-----------------------------",
+        BLUE + "| * | * | * | * | * | * | * |",
+        BLUE + "-----------------------------",
+        BLUE + "| * | * | * | * | * | * | * |",
+        BLUE + "-----------------------------",
+        BLUE + "| * | * | * | * | * | * | * |",
+        BLUE + "-----------------------------",
+        BLUE + "| * | * | * | * | * | * | * |",
+        BLUE + "-----------------------------",
+        BLUE + "| * | * | * | * | * | * | * |",
+        BLUE + "-----------------------------",
+        BLUE + "| * | * | * | * | * | * | * |",
+        BLUE + "-----------------------------",
+        BLUE + "| # | # | # | # | # | # | # |",
+        BLUE + "-----------------------------",
     };
     public static int redWins = 0;
     public static int yellowWins = 0;
@@ -76,10 +79,10 @@ public class Main {
                         break;
                     case "2":
                         System.out.println("The Connect 4 game is a classic strategy game in which 2 players go head-to-head in a battle to own the grid!" +
-                                "\nPlayers choose yellow or red tokens. They drop the discs into the grid,"  +
-                                "\nstarting in the middle or at the edge to stack their colored discs upwards, horizontally, or diagonally." +
-                                "\nUse strategy to block opponents while aiming to be the first player to get 4 in a row to win!" +
-                                "\nCourtesy of Hasbro Instructions.");
+                            "\nPlayers choose yellow or red tokens. They drop the discs into the grid," +
+                            "\nstarting in the middle or at the edge to stack their colored discs upwards, horizontally, or diagonally." +
+                            "\nUse strategy to block opponents while aiming to be the first player to get 4 in a row to win!" +
+                            "\nCourtesy of Hasbro Instructions.");
 
                         System.out.println();
                         /*
@@ -90,7 +93,10 @@ public class Main {
                         break;
                     case "3":
                         // TODO: Print stats
-                        System.out.println("Wins" + "\nYellow: " + yellowWins + "\nRed: " + redWins);
+                        System.out.println(BOLD + "Wins:" + RESET +
+                            YELLOW + "\nYellow: " + RESET + yellowWins +
+                            RED + "\nRed: " + RESET + redWins
+                        );
                         System.out.println();
                         /*
                          * Wait for the user to press enter before continuing
@@ -105,33 +111,56 @@ public class Main {
             }
             while (!input.equals("1"));
 
-            // While the game is still running
-            while (gameRunning) {
-                printGameboard();
+            byte gameStatus;
+            printGameboard();
+            // By default, the game should constantly run until one of the exit statements is reached
+            while (true) {
                 // Initializes the column the user wishes to place the token in
                 int column = getAndValidateColumn(
                     YELLOW + "Yellow" + RESET + ", on which column do you want to place your token (1-7)? "
                 );
 
                 // Puts the token 'Y' at the bottom of the column that is chosen
-                modifyGameboard(column - 1, 'Y');
-                if (!gameRunning) {
-                    yellowWins++;
-                    break;
-                }
+                int row = modifyGameboard(column - 1, 'Y');
 
                 printGameboard();
+
+                gameStatus = getGameboardStatus(row, column - 1, 'Y');
+                // Checks if the game has ended
+                if (gameStatus != CONTINUE) {
+                    break;
+                }
                 column = getAndValidateColumn(
                     RED + "Red" + RESET + ", on which column do you want to place your token (1-7)? "
                 );
 
                 // Puts the token 'R' at the bottom of the column that is chosen
-                modifyGameboard(column - 1, 'R');
-                if (!gameRunning){
-                    redWins++;
+                row = modifyGameboard(column - 1, 'R');
+
+                printGameboard();
+
+                gameStatus = getGameboardStatus(row, column - 1, 'R');
+                // Checks if the game has ended
+                if (gameStatus != CONTINUE) {
                     break;
                 }
             }
+            printResults(gameStatus);
+        }
+    }
+
+    public static void printResults(int gameStatus) {
+        switch (gameStatus) {
+            case RED_WINS:
+                System.out.println(RED + "Red" + RESET + " wins!");
+                redWins++;
+                return;
+            case YELLOW_WINS:
+                System.out.println(YELLOW + "Yellow" + RESET + " wins!");
+                yellowWins++;
+                return;
+            default:
+                System.out.println("The game has ended in a draw!");
         }
     }
 
@@ -139,8 +168,6 @@ public class Main {
      * Resets gameboard by setting all values within it to the default in preparation for a new game
      */
     public static void resetGame() {
-        gameRunning = true;
-
         // Fills the gameboard with empty spaces (clears the board)
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 6; j++) {
@@ -271,71 +298,76 @@ public class Main {
      *
      * @param column the column in which the new disc should go
      * @param player the player colour that the disc belongs to
+     * @return the row (y coordinate) in which the disc was placed
      */
-    public static void modifyGameboard(int column, char player) {
+    public static int modifyGameboard(int column, char player) {
         /*
          * Checks to see which team the player is on
          * Will attempt to place a token at the bottom of a column to simulate how gravity would impact a token in real life
          */
-        int row = 0;
-        if (player == 'Y') {
-            for (int y = 0; y < 7; y++) {
-                if (gameBoard[column][y] == ' ') {
-                    gameBoard[column][y] = 'Y';
-                    row = y;
-                    break;
+        switch (player) {
+            case 'Y':
+                for (int y = 0; y < 7; y++) {
+                    if (gameBoard[column][y] == ' ') {
+                        gameBoard[column][y] = 'Y';
+                        return y;
+                    }
                 }
-            }
-            if (checkGameboard(row, column, player)) {
-                printGameboard();
-                System.out.println(YELLOW + "Yellow" + RESET + " wins!");
-                gameRunning = false;
-            }
-        }
-        else if (player == 'R') {
-            for (int y = 0; y < 7; y++) {
-                if (gameBoard[column][y] == ' ') {
-                    gameBoard[column][y] = 'R';
-                    row = y;
-                    break;
+                break;
+            case 'R':
+                for (int y = 0; y < 7; y++) {
+                    if (gameBoard[column][y] == ' ') {
+                        gameBoard[column][y] = 'R';
+                        return y;
+                    }
                 }
-            }
-            if (checkGameboard(row, column, player)) {
-                printGameboard();
-                System.out.println(RED + "Red" + RESET + " wins!");
-                gameRunning = false;
-            }
+                break;
         }
+        return -1;
     }
 
     /**
-     * Checks to determine whether a player has won the game yet
+     * Checks to determine if the game has ended,
+     * whether through a player victory or through a draw
      *
      * @param row    the row in which the latest disc was placed
      * @param column the column in which the latest disc was placed
      * @param player the colour of the player who placed the latest disc
-     * @return true if player has won, false otherwise
+     * @return a number based on the game's current state. 0 for continue, 1 for red wins, 2 for yellow wins, 3 for draw
      */
-    public static boolean checkGameboard(int row, int column, char player) {
+    public static byte getGameboardStatus(int row, int column, char player) {
         /*
          * Checks to see if the player has won the game
          * Checks to see if the player has won by checking row, column, left diagonal, and right diagonal
          */
-        return checkRow(row, column, player)
-            || checkColumn(row, column, player)
+        boolean gameBoardFull = true;
+        for (int i = 0; i < gameBoard.length; i++) {
+            if (gameBoard[i][gameBoard[i].length - 1] == ' ') {
+                gameBoardFull = false;
+                break;
+            }
+        }
+        if (gameBoardFull) {
+            return DRAW;
+        }
+        if (checkRow(row, player)
+            || checkColumn(column, player)
             || checkLeftDiagonal(row, column, player)
-            || checkRightDiagonal(row, column, player);
+            || checkRightDiagonal(row, column, player)
+        ) {
+            return player == 'Y' ? YELLOW_WINS : RED_WINS;
+        }
+        return CONTINUE;
     }
 
     /**
      * Checks the row of the latest disc placed to see if there are four consecutive ones
      *
-     * @param rowIndex    the row in which the latest disc was placed
-     * @param columnIndex the column in which the latest disc was played
-     * @param player      the colour of the player who placed the latest disc
+     * @param rowIndex the row in which the latest disc was placed
+     * @param player   the colour of the player who placed the latest disc
      * @return true if player has won, false otherwise
      */
-    public static boolean checkRow(int rowIndex, int columnIndex, char player) {
+    public static boolean checkRow(int rowIndex, char player) {
         /*
          * Checks to see if the player has won by checking the rowIndex
          * If the player has 4 tokens in a rowIndex, the player wins
@@ -358,12 +390,11 @@ public class Main {
     /**
      * Checks the column of the latest disc placed to see if there are four consecutive discs
      *
-     * @param rowIndex    the row in which the latest disc was placed
      * @param columnIndex the column in which the latest disc was placed
      * @param player      the colour of the player who placed the latest disc
      * @return true if the player has won, false otherwise
      */
-    public static boolean checkColumn(int rowIndex, int columnIndex, char player) {
+    public static boolean checkColumn(int columnIndex, char player) {
         /*
          * Checks to see if the player has won by checking the column
          * If the player has 4 tokens in a column, the player wins
