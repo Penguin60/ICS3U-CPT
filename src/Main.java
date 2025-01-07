@@ -31,6 +31,8 @@ public class Main {
         BLUE + "|  #  |  #  |  #  |  #  |  #  |  #  |  #  |",
         BLUE + "-------------------------------------------",
     };
+    public static int redWins = 0;
+    public static int yellowWins = 0;
 
     public static void main(String[] args) {
         // Welcome message
@@ -73,8 +75,12 @@ public class Main {
                         resetGame();
                         break;
                     case "2":
-                        // TODO: Print rules
-                        System.out.println("rules rules rules rules rules");
+                        System.out.println("The Connect 4 game is a classic strategy game in which 2 players go head-to-head in a battle to own the grid!" +
+                                "\nPlayers choose yellow or red tokens. They drop the discs into the grid,"  +
+                                "\nstarting in the middle or at the edge to stack their colored discs upwards, horizontally, or diagonally." +
+                                "\nUse strategy to block opponents while aiming to be the first player to get 4 in a row to win!" +
+                                "\nCourtesy of Hasbro Instructions.");
+
                         System.out.println();
                         /*
                          * Wait for the user to press enter before continuing
@@ -84,7 +90,7 @@ public class Main {
                         break;
                     case "3":
                         // TODO: Print stats
-                        System.out.println("stats");
+                        System.out.println("Wins" + "\nYellow: " + yellowWins + "\nRed: " + redWins);
                         System.out.println();
                         /*
                          * Wait for the user to press enter before continuing
@@ -109,7 +115,10 @@ public class Main {
 
                 // Puts the token 'Y' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'Y');
-                if (!gameRunning) break;
+                if (!gameRunning) {
+                    yellowWins++;
+                    break;
+                }
 
                 printGameboard();
                 column = getAndValidateColumn(
@@ -118,7 +127,10 @@ public class Main {
 
                 // Puts the token 'R' at the bottom of the column that is chosen
                 modifyGameboard(column - 1, 'R');
-                if (!gameRunning) break;
+                if (!gameRunning){
+                    redWins++;
+                    break;
+                }
             }
         }
     }
