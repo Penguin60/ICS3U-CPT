@@ -77,7 +77,7 @@ public class Main {
                         // Reset the gameboard
                         resetGame();
                         break;
-                    case "2":
+                    case "2": // Prints the rules of the game Connect 4
                         System.out.println("The Connect 4 game is a classic strategy game in which 2 players go head-to-head in a battle to own the grid!" +
                             "\nPlayers choose yellow or red tokens. They drop the discs into the grid," +
                             "\nstarting in the middle or at the edge to stack their colored discs upwards, horizontally, or diagonally." +
@@ -91,8 +91,7 @@ public class Main {
                          */
                         awaitEnter();
                         break;
-                    case "3":
-                        // TODO: Print stats
+                    case "3": // Prints the stats
                         System.out.println(BOLD + "Wins:" + RESET +
                             YELLOW + "\nYellow: " + RESET + yellowWins +
                             RED + "\nRed: " + RESET + redWins
@@ -378,7 +377,7 @@ public class Main {
             if (gameBoard[x][rowIndex] == player) {
                 counter++;
             }
-            // reset counter wheneever the current game piece is not the same color as the current player
+            // reset counter whenever the current game piece is not the same color as the current player
             else {
                 counter = 0;
             }
@@ -410,7 +409,7 @@ public class Main {
             if (gameBoard[columnIndex][y] == player) {
                 counter++;
             }
-            // reset counter wheneever the current game piece is not the same color as the current player
+            // reset counter whenever the current game piece is not the same color as the current player
             else {
                 counter = 0;
             }
@@ -450,7 +449,7 @@ public class Main {
             if (gameBoard[currentColumn][currentRow] == player) {
                 counter++;
             }
-            // reset counter wheneever the current game piece is not the same color as the current player
+            // reset counter whenever the current game piece is not the same color as the current player
             else {
                 counter = 0;
             }
@@ -493,7 +492,7 @@ public class Main {
             if (gameBoard[currentColumn][currentRow] == player) {
                 counter++;
             }
-            // reset counter wheneever the current game piece is not the same color as the current player
+            // reset counter whenever the current game piece is not the same color as the current player
             else {
                 counter = 0;
             }
