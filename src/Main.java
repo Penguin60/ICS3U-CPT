@@ -374,16 +374,20 @@ public class Main {
          */
         int counter = 0;
         for (int x = 0; x < 7; x++) {
+            // increment counter if the current game piece is the same color as the current player
             if (gameBoard[x][rowIndex] == player) {
                 counter++;
             }
+            // reset counter wheneever the current game piece is not the same color as the current player
             else {
                 counter = 0;
             }
+            // return true if the counter reaches four consecutive game pieces of the same color as the current player
             if (counter == 4) {
                 return true;
             }
         }
+        // return false if the loop exits; the player has not won
         return false;
     }
 
@@ -400,17 +404,22 @@ public class Main {
          * If the player has 4 tokens in a column, the player wins
          */
         int counter = 0;
+        // check the column
         for (int y = 0; y < 6; y++) {
+            // increment counter if the current game piece is the same color as the current player
             if (gameBoard[columnIndex][y] == player) {
                 counter++;
             }
+            // reset counter wheneever the current game piece is not the same color as the current player
             else {
                 counter = 0;
             }
+            // return true if the counter reaches four consecutive game pieces of the same color as the current player
             if (counter == 4) {
                 return true;
             }
         }
+        // return false if the loop exits; the player has not won
         return false;
     }
 
@@ -437,18 +446,23 @@ public class Main {
         }
         // check the diagonal
         while (currentRow >= 0 && currentColumn < 7) {
+            // increment counter if the current game piece is the same color as the current player
             if (gameBoard[currentColumn][currentRow] == player) {
                 counter++;
             }
+            // reset counter wheneever the current game piece is not the same color as the current player
             else {
                 counter = 0;
             }
+            // return true if the counter reaches four consecutive game pieces of the same color as the current player
             if (counter == 4) {
                 return true;
             }
+            // move to the next piece on the grid
             currentRow--;
             currentColumn++;
         }
+        // return false if the loop exits; the player has not won
         return false;
     }
 
@@ -475,18 +489,23 @@ public class Main {
         }
         // check the diagonal
         while (currentRow >= 0 && currentColumn >= 0) {
+            // increment counter if the current game piece is the same color as the current player
             if (gameBoard[currentColumn][currentRow] == player) {
                 counter++;
             }
+            // reset counter wheneever the current game piece is not the same color as the current player
             else {
                 counter = 0;
             }
+            // return true if the counter reaches four consecutive game pieces of the same color as the current player
             if (counter == 4) {
                 return true;
             }
+            // move to the next piece on the grid
             currentRow--;
             currentColumn--;
         }
+        // return false if the loop exits; the player has not won
         return false;
     }
 
