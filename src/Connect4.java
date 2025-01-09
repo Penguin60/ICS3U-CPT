@@ -1,6 +1,13 @@
+/**
+ * Program: Connect 4
+ * Authors: Max Wang, Radean Rashed, Lucas Ding, Alex Li
+ * Date Created: 2025-01-09
+ * Description: A game where you try to get 4 of your tokens in a row
+ */
+
 import java.util.Scanner;
 
-public class Main {
+public class Connect4 {
     // ANSI escape codes for text formatting
     public static final String BLACK = "\u001B[30m";
     public static final String RED = "\u001B[31m";
@@ -280,20 +287,20 @@ public class Main {
     public static int getAndValidateColumn(String prompt) {
         // Checks if the column that the user inputs is valid from columns 1 to 7
         // 1 is subtracted from the column to account for the 0-based index
-        int columnIndex = Integer.parseInt(getAndValidateInput(
+        int column = Integer.parseInt(getAndValidateInput(
             prompt,
             "[1-7]"
-        )) - 1;
+        ));
 
         // Checks if the top row at said column is empty
-        while (gameBoard[columnIndex][gameBoard[columnIndex].length - 1] != ' ') {
-            columnIndex = Integer.parseInt(getAndValidateInput(
-                RED + "Column " + columnIndex + " is full, please choose another column: " + RESET,
+        while (gameBoard[column - 1][gameBoard[column - 1].length - 1] != ' ') {
+            column = Integer.parseInt(getAndValidateInput(
+                RED + "Column " + column + " is full, please choose another column: " + RESET,
                 "[1-7]"
             ));
         }
 
-        return columnIndex;
+        return column;
     }
 
     /**
