@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class Main {
+    // ANSI escape codes for text formatting
     public static final String BLACK = "\u001B[30m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
@@ -11,12 +12,21 @@ public class Main {
     public static final String WHITE = "\u001B[37m";
     public static final String BOLD = "\033[0;1m";
     public static final String RESET = "\u001B[0m";
+    // Game state constants
     public static final byte CONTINUE = 0;
     public static final byte RED_WINS = 1;
     public static final byte YELLOW_WINS = 2;
     public static final byte DRAW = 3;
+    // Global scanner object for user input
     public static final Scanner scanner = new Scanner(System.in);
+    // Initial game board layout 7 x 6
     public static char[][] gameBoard = new char[7][6];
+    /*
+     * The template for displaying the gameboard
+     * The '*' characters will be replaced by the tokens
+     * The '#' characters will be replaced by the column numbers
+     * Allows for dynamic coloring
+     */
     public static final String[] boardTemplate = {
         BLUE + "-----------------------------",
         BLUE + "| * | * | * | * | * | * | * |",
@@ -34,6 +44,7 @@ public class Main {
         BLUE + "| # | # | # | # | # | # | # |",
         BLUE + "-----------------------------",
     };
+    // Wins for each player
     public static int redWins = 0;
     public static int yellowWins = 0;
 
@@ -48,7 +59,7 @@ public class Main {
         System.out.println();
         System.out.println();
 
-        // Continually repeat the game until the player quits.
+        // Continually repeat the program until the player quits.
         while (true) {
             String input;
 
@@ -65,6 +76,7 @@ public class Main {
                 System.out.println("╚══════════════════════════╝");
                 System.out.println(RESET);
 
+                // Get the user's input, using regex to restrict it to 1-4
                 input = getAndValidateInput(
                     "Please select an option (1-4): ",
                     "[1-4]"
@@ -75,14 +87,15 @@ public class Main {
                 switch (input) {
                     case "1":
                         // Reset the gameboard
-                        resetGame();
+                        resetGameboard();
                         break;
-                    case "2": // Prints the rules of the game Connect 4
+                    case "2": // Prints the rules of Connect 4
                         System.out.println("The Connect 4 game is a classic strategy game in which 2 players go head-to-head in a battle to own the grid!" +
                             "\nPlayers choose yellow or red tokens. They drop the discs into the grid," +
                             "\nstarting in the middle or at the edge to stack their colored discs upwards, horizontally, or diagonally." +
                             "\nUse strategy to block opponents while aiming to be the first player to get 4 in a row to win!" +
-                            "\nCourtesy of Hasbro Instructions.");
+                            "\nCourtesy of Hasbro Instructions."
+                        );
 
                         System.out.println();
                         /*
@@ -103,42 +116,49 @@ public class Main {
                          */
                         awaitEnter();
                         break;
-                    case "4":
+                    case "4": // Exits the program
                         System.out.println("Thanks for playing!");
                         return;
                 }
             }
+            // Continue to display the menu until the user chooses to play
             while (!input.equals("1"));
 
+            // The status of the game, determining whether to continue,
+            // whether a player has won, or if a tie has been reached
             byte gameStatus;
             printGameboard();
-            // By default, the game should constantly run until one of the exit statements is reached
+
+            // The game should constantly run until one of the exit statements is reached
             while (true) {
-                // Initializes the column the user wishes to place the token in
-                int column = getAndValidateColumn(
+                // Gets the column the user wishes to place the token in
+                // 1 is subtracted from the column to account for the 0-based index
+                int columnIndex = getAndValidateColumn(
                     YELLOW + "Yellow" + RESET + ", on which column do you want to place your token (1-7)? "
-                );
+                ) - 1;
 
                 // Puts the token 'Y' at the bottom of the column that is chosen
-                int row = modifyGameboard(column - 1, 'Y');
+                int rowIndex = modifyGameboard(columnIndex, 'Y');
 
                 printGameboard();
 
-                gameStatus = getGameboardStatus(row, column - 1, 'Y');
+                gameStatus = getGameboardStatus(rowIndex, columnIndex, 'Y');
                 // Checks if the game has ended
                 if (gameStatus != CONTINUE) {
                     break;
                 }
-                column = getAndValidateColumn(
+                // Gets the column the user wishes to place the token in
+                // 1 is subtracted from the column to account for the 0-based index
+                columnIndex = getAndValidateColumn(
                     RED + "Red" + RESET + ", on which column do you want to place your token (1-7)? "
-                );
+                ) - 1;
 
                 // Puts the token 'R' at the bottom of the column that is chosen
-                row = modifyGameboard(column - 1, 'R');
+                rowIndex = modifyGameboard(columnIndex, 'R');
 
                 printGameboard();
 
-                gameStatus = getGameboardStatus(row, column - 1, 'R');
+                gameStatus = getGameboardStatus(rowIndex, columnIndex, 'R');
                 // Checks if the game has ended
                 if (gameStatus != CONTINUE) {
                     break;
@@ -148,6 +168,11 @@ public class Main {
         }
     }
 
+    /**
+     * Prints the results of the game, including the winner or if the game ended in a draw
+     *
+     * @param gameStatus the status of the game. 1 for red wins, 2 for yellow wins, 3 for draw. Will never be 0
+     */
     public static void printResults(int gameStatus) {
         switch (gameStatus) {
             case RED_WINS:
@@ -166,7 +191,7 @@ public class Main {
     /**
      * Resets gameboard by setting all values within it to the default in preparation for a new game
      */
-    public static void resetGame() {
+    public static void resetGameboard() {
         // Fills the gameboard with empty spaces (clears the board)
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 6; j++) {
@@ -201,7 +226,7 @@ public class Main {
             }
             // If the row is on the second last row, replace the '#' with the column numbers
             if (i == boardTemplate.length - 2) {
-                // Iterate through the columns, replacing each occurence of '#' with the column number
+                // Iterate through the columns, replacing each occurrence of '#' with the column number
                 for (int columnNum = 1; columnNum <= 7; columnNum++) {
                     /*
                      * Replace the first occurrence of '#' with the column number, along
@@ -232,7 +257,7 @@ public class Main {
      * Applies formatting to the player discs, adding the appropriate colours to them
      *
      * @param player the team the player is on (yellow or red)
-     * @return a string that contains a token coloured in accordance with the player team
+     * @return a string that contains a token coloured in accordance with the player team, or an empty space
      */
     public static String getToken(char player) {
         // Apply formatting to the token based on the player
@@ -247,27 +272,28 @@ public class Main {
     }
 
     /**
-     * Asks the user to input where they want to place their disk and validates
+     * Asks the user to input where they want to place their disk and validates the input
      *
      * @param prompt the cue asking the user where they would like to go
      * @return the validated column that the user has chosen to place their disc in
      */
     public static int getAndValidateColumn(String prompt) {
         // Checks if the column that the user inputs is valid from columns 1 to 7
-        int column = Integer.parseInt(getAndValidateInput(
+        // 1 is subtracted from the column to account for the 0-based index
+        int columnIndex = Integer.parseInt(getAndValidateInput(
             prompt,
             "[1-7]"
-        ));
+        )) - 1;
 
         // Checks if the top row at said column is empty
-        while (gameBoard[column - 1][gameBoard[column - 1].length - 1] != ' ') {
-            column = Integer.parseInt(getAndValidateInput(
-                RED + "Column " + column + " is full, please choose another column: " + RESET,
+        while (gameBoard[columnIndex][gameBoard[columnIndex].length - 1] != ' ') {
+            columnIndex = Integer.parseInt(getAndValidateInput(
+                RED + "Column " + columnIndex + " is full, please choose another column: " + RESET,
                 "[1-7]"
             ));
         }
 
-        return column;
+        return columnIndex;
     }
 
     /**
@@ -297,12 +323,14 @@ public class Main {
      *
      * @param column the column in which the new disc should go
      * @param player the player colour that the disc belongs to
-     * @return the row (y coordinate) in which the disc was placed
+     * @return the row (y coordinate) in which the disc was placed,
+     * or -1 if the player is invalid or the column is full
      */
     public static int modifyGameboard(int column, char player) {
         /*
          * Checks to see which team the player is on
          * Will attempt to place a token at the bottom of a column to simulate how gravity would impact a token in real life
+         * Iterates from bottom to top of the specified column to find the first empty space
          */
         switch (player) {
             case 'Y':
@@ -329,19 +357,22 @@ public class Main {
      * Checks to determine if the game has ended,
      * whether through a player victory or through a draw
      *
-     * @param row    the row in which the latest disc was placed
-     * @param column the column in which the latest disc was placed
-     * @param player the colour of the player who placed the latest disc
+     * @param rowIndex    the row in which the latest disc was placed
+     * @param columnIndex the column in which the latest disc was placed
+     * @param player      the colour of the player who placed the latest disc
      * @return a number based on the game's current state. 0 for continue, 1 for red wins, 2 for yellow wins, 3 for draw
      */
-    public static byte getGameboardStatus(int row, int column, char player) {
+    public static byte getGameboardStatus(int rowIndex, int columnIndex, char player) {
         /*
-         * Checks to see if the player has won the game
-         * Checks to see if the player has won by checking row, column, left diagonal, and right diagonal
+         * Checks to see if the player has won the game, or if the game has ended in a draw
+         * Set the gameboard to full by default, because
+         * the gameboard is empty as long as one column is not full
          */
         boolean gameBoardFull = true;
-        for (int i = 0; i < gameBoard.length; i++) {
-            if (gameBoard[i][gameBoard[i].length - 1] == ' ') {
+        for (char[] column : gameBoard) {
+            // Check if the top of the column is empty
+            // If it is, the game board is not full and the loop can exit
+            if (column[column.length - 1] == ' ') {
                 gameBoardFull = false;
                 break;
             }
@@ -349,10 +380,11 @@ public class Main {
         if (gameBoardFull) {
             return DRAW;
         }
-        if (checkRow(row, player)
-            || checkColumn(column, player)
-            || checkLeftDiagonal(row, column, player)
-            || checkRightDiagonal(row, column, player)
+        // Checks to see if the player has won by searching row, column, left diagonal, and right diagonal
+        if (checkRow(rowIndex, player)
+            || checkColumn(columnIndex, player)
+            || checkLeftDiagonal(rowIndex, columnIndex, player)
+            || checkRightDiagonal(rowIndex, columnIndex, player)
         ) {
             return player == 'Y' ? YELLOW_WINS : RED_WINS;
         }
